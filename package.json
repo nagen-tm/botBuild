@@ -1,0 +1,24 @@
+{
+  "name": "botbuild",
+  "version": "1.0.0",
+  "description": "A twitch moderator bot",
+  "main": "src",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nagen-tm/botBuild.git"
+  },
+  "author": "therese nagengast",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nagen-tm/botBuild/issues"
+  },
+  "homepage": "https://github.com/nagen-tm/botBuild#readme",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "tmi.js": "^1.8.5"
+  }
+}
