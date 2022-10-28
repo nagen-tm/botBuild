@@ -27,10 +27,20 @@ client.on('disconnected', (reason) => {
 client.on('message', (channel, userstate, message, self) => {
 	if(self) return;
 
+  // shoutouts with social media if available
 	if(message.includes('!so')) {
     _getSocials(channel, message)
 	}
 
+  // inspiration randomizer
+  if(message.includes('!inspiration')) {
+    _getInspiration(channel)
+	}
+
+  // insta randomizer
+  if(message.includes('!insta')) {
+    _getInsta(channel)
+  }
 
 });
 
@@ -42,6 +52,11 @@ client.on('raided', (channel, username) => {
 });
 
 // functions 
+function onDisconnectedHandler(reason) {
+  console.log(`Disconnected: ${reason}`)
+}
+
+// message functions:
 async function _getSocials(channel, message) {
   let mes = message.split(' ');
   let user = mes[1];
@@ -58,6 +73,41 @@ async function _getSocials(channel, message) {
   }
 }
 
-function onDisconnectedHandler(reason) {
-  console.log(`Disconnected: ${reason}`)
+function _getInspiration(channel) {
+  // array of instas
+  const inspo =[
+    'https://www.instagram.com/loisvb/', 
+    'https://www.instagram.com/cnotbusch/', 
+    'https://www.instagram.com/vitkovskaya_art/', 
+    'https://www.instagram.com/robreyart/', 
+    'https://www.instagram.com/fdasuarez/', 
+    'https://www.instagram.com/valentinepasche/', 
+    'https://www.instagram.com/chrissabug/', 
+    'https://www.instagram.com/f3lc4t/', 
+    'https://www.instagram.com/valentinaremenar/'
+  ]
+
+  let link = inspo[Math.floor(Math.random() * inspo.length)]
+console.log(link)
+  client.say(channel, `I find this artist to be super inspirational! ${link}` );
 }
+
+function _getInsta(channel, message) {
+  const list = [
+    'https://www.instagram.com/artbysmashley/', 
+    'https://www.instagram.com/anabel.kay/', 
+    'https://www.instagram.com/beateasel/', 
+    'https://www.instagram.com/margosimoneart/', 
+    'https://www.instagram.com/babe_rosss_art/', 
+    'https://www.instagram.com/abluskittle.art/', 
+    'https://www.instagram.com/sernuffalo/', 
+    'https://www.instagram.com/sitriedraws/',
+    'https://www.instagram.com/sylessae/'
+  ]
+
+  // randomly grab link
+  let link = list[Math.floor(Math.random() * list.length)]
+
+  client.say(channel, `Check out this insta: ${link}` );
+}
+

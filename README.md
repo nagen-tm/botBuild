@@ -5,4 +5,7 @@ This bot uses npm package [tmi.js](https://tmijs.com/), documentation shows ther
 
 Current features: 
 - shout out command that pulls in social media from target user
+- randomizer command that pulls different link in each time
 
+ToDo:
+- create command to convert F to C
