@@ -23,13 +23,20 @@ client.on('disconnected', (reason) => {
   onDisconnectedHandler(reason)
 })
 
-// message commands
+// message commands in alphabetical order
 client.on('message', (channel, userstate, message, self) => {
 	if(self) return;
 
-  // shoutouts with social media if available
-	if(message.includes('!so')) {
-    _getSocials(channel, message)
+  // commissions
+	if(message.includes('!commissions')) {
+    client.say(channel, 'Never.');
+	}
+
+  // lurk
+	if(message.includes('!lurk')) {
+    client.say(channel,
+      `@${username} disapeared into the shadows. No one knows when they'll be back.`
+    )
 	}
 
   // inspiration randomizer
@@ -41,6 +48,18 @@ client.on('message', (channel, userstate, message, self) => {
   if(message.includes('!insta')) {
     _getInsta(channel)
   }
+
+  // shoutouts with social media if available
+	if(message.includes('!so')) {
+    _getSocials(channel, message)
+	}
+
+  // tools
+  if(message.includes('!tools')) {
+    client.say(channel, 
+      'I use a Wacom Intuos Pro Medium with Clip Studio Paint for my digital art. For traditional I use panpastel and charcoal.'
+    );
+	}
 
 });
 
@@ -88,7 +107,6 @@ function _getInspiration(channel) {
   ]
 
   let link = inspo[Math.floor(Math.random() * inspo.length)]
-console.log(link)
   client.say(channel, `I find this artist to be super inspirational! ${link}` );
 }
 
@@ -107,7 +125,6 @@ function _getInsta(channel, message) {
 
   // randomly grab link
   let link = list[Math.floor(Math.random() * list.length)]
-
   client.say(channel, `Check out this insta: ${link}` );
 }
 
