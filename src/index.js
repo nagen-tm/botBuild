@@ -49,10 +49,31 @@ client.on('message', (channel, userstate, message, self) => {
     _getInsta(channel)
   }
 
+  // kofi
+  if(message.includes('!kofi')) {
+    client.say(channel, 
+      'Keep an eye on kofi, originals may be sold there! https://ko-fi.com/nagentm'
+    );
+  }
+
+  // prints
+  if(message.includes('!prints')) {
+    client.say(channel, 
+      'Check out my inprnt shop: https://www.inprnt.com/gallery/nagen_tm/'
+    );
+  }
+
   // shoutouts with social media if available
 	if(message.includes('!so')) {
     _getSocials(channel, message)
 	}
+
+  // socials
+  if(message.includes('!socials')) {
+    client.say(channel, 
+      'I share my art here: https://www.instagram.com/nagen_tm/ https://www.deviantart.com/nagen-tm https://ko-fi.com/nagentm'
+    );
+  }
 
   // tools
   if(message.includes('!tools')) {

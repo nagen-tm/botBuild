@@ -16,7 +16,10 @@ Current commands:
 !lurk
 !inspiration
 !insta
+!kofi
+!prints
 !so
+!socials
 !tools
 ```
 
