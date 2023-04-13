@@ -32,6 +32,11 @@ client.on('message', (channel, userstate, message, self) => {
     client.say(channel, 'Never.');
 	}
 
+  // fahrenheit to celsius
+	if(message.includes('!ftoc')) {
+    _getConversion(channel, message)
+	}
+
   // lurk
 	if(message.includes('!lurk')) {
     client.say(channel,
@@ -96,6 +101,53 @@ function onDisconnectedHandler(reason) {
   console.log(`Disconnected: ${reason}`)
 }
 
+// fahrenheit to celcius
+function _getConversion(channel, message){
+  let mes = message.split(' ');
+  let num = mes[1];
+  const temp = (num - 32) / 1.8
+  client.say(channel, `It's ${temp}C` );
+}
+
+// random inspiration
+function _getInspiration(channel) {
+  // array of instas
+  const inspo =[
+    'https://www.instagram.com/loisvb/', 
+    'https://www.instagram.com/cnotbusch/', 
+    'https://www.instagram.com/vitkovskaya_art/', 
+    'https://www.instagram.com/robreyart/', 
+    'https://www.instagram.com/fdasuarez/', 
+    'https://www.instagram.com/valentinepasche/', 
+    'https://www.instagram.com/chrissabug/', 
+    'https://www.instagram.com/f3lc4t/', 
+    'https://www.instagram.com/valentinaremenar/',
+    'https://www.instagram.com/mad.charcoal/'
+  ]
+
+  let link = inspo[Math.floor(Math.random() * inspo.length)]
+  client.say(channel, `I find this artist to be super inspirational! ${link}` );
+}
+
+// random insta link
+function _getInsta(channel) {
+  const list = [
+    'https://www.instagram.com/artbysmashley/', 
+    'https://www.instagram.com/thejessiecarper/', 
+    'https://www.instagram.com/beateasel/', 
+    'https://www.instagram.com/margosimoneart/', 
+    'https://www.instagram.com/babe_rosss_art/', 
+    'https://www.instagram.com/abluskittle.art/', 
+    'https://www.instagram.com/cdotcreates/', 
+    'https://www.instagram.com/pawsitively_stitched/',
+    'https://www.instagram.com/sylessae/'
+  ]
+
+  // randomly grab link
+  let link = list[Math.floor(Math.random() * list.length)]
+  client.say(channel, `Check out this insta: ${link}` );
+}
+
 // message functions:
 async function _getSocials(channel, message) {
   let mes = message.split(' ');
@@ -112,40 +164,3 @@ async function _getSocials(channel, message) {
     })
   }
 }
-
-function _getInspiration(channel) {
-  // array of instas
-  const inspo =[
-    'https://www.instagram.com/loisvb/', 
-    'https://www.instagram.com/cnotbusch/', 
-    'https://www.instagram.com/vitkovskaya_art/', 
-    'https://www.instagram.com/robreyart/', 
-    'https://www.instagram.com/fdasuarez/', 
-    'https://www.instagram.com/valentinepasche/', 
-    'https://www.instagram.com/chrissabug/', 
-    'https://www.instagram.com/f3lc4t/', 
-    'https://www.instagram.com/valentinaremenar/'
-  ]
-
-  let link = inspo[Math.floor(Math.random() * inspo.length)]
-  client.say(channel, `I find this artist to be super inspirational! ${link}` );
-}
-
-function _getInsta(channel, message) {
-  const list = [
-    'https://www.instagram.com/artbysmashley/', 
-    'https://www.instagram.com/anabel.kay/', 
-    'https://www.instagram.com/beateasel/', 
-    'https://www.instagram.com/margosimoneart/', 
-    'https://www.instagram.com/babe_rosss_art/', 
-    'https://www.instagram.com/abluskittle.art/', 
-    'https://www.instagram.com/sernuffalo/', 
-    'https://www.instagram.com/sitriedraws/',
-    'https://www.instagram.com/sylessae/'
-  ]
-
-  // randomly grab link
-  let link = list[Math.floor(Math.random() * list.length)]
-  client.say(channel, `Check out this insta: ${link}` );
-}
-

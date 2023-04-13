@@ -9,10 +9,12 @@ To get auth token:
 https://id.twitch.tv/oauth2/authorize?client_id=CLIENT_ID&redirect_uri=YOUR_HOST&response_type=token&scope=chat:read+chat:edit+channel:moderate
 
 Current commands: 
+- fahrenheit to celcius conversion
 - shout out command that pulls in social media from target user
 - randomizer command that pulls different link in each time used with inspiration and insta
 ```
 !commissions
+!ftoc
 !lurk
 !inspiration
 !insta
@@ -22,9 +24,6 @@ Current commands:
 !socials
 !tools
 ```
-
-ToDo:
-- create command to convert F to C
 
 To Run:
  ```
