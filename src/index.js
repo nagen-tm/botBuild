@@ -34,13 +34,13 @@ client.on('message', (channel, userstate, message, self) => {
 
   // fahrenheit to celsius
 	if(message.includes('!ftoc')) {
-    _getConversion(channel, message)
+    _getConversion(channel, userstate, message)
 	}
 
   // lurk
 	if(message.includes('!lurk')) {
     client.say(channel,
-      `@${username} disapeared into the shadows. No one knows when they'll be back.`
+      `${userstate['display-name']} disapeared into the shadows. No one knows when they'll be back.`
     )
 	}
 
@@ -69,7 +69,7 @@ client.on('message', (channel, userstate, message, self) => {
   }
 
   // shoutouts with social media if available
-	if(message.includes('!so')) {
+	if(message.includes('!so ')) {
     _getSocials(channel, message)
 	}
 
@@ -102,11 +102,11 @@ function onDisconnectedHandler(reason) {
 }
 
 // fahrenheit to celcius
-function _getConversion(channel, message){
+function _getConversion(channel, userstate, message){
   let mes = message.split(' ');
   let num = mes[1];
-  const temp = (num - 32) / 1.8
-  client.say(channel, `It's ${temp}C` );
+  let temp = (num - 32) / 1.8
+  client.say(channel, `${userstate['display-name']} it's ${temp}C` );
 }
 
 // random inspiration
