@@ -1,4 +1,10 @@
 # botBuild
+
+This repo is for messing around with creating things for streaming on Twitch.
+
+## botBuild(python)
+
+## botBuild(javascript)
 Twitch Chat Bot [Tutorial](https://www.youtube.com/watch?v=7uSjKbAUHXg)
 
 This bot uses npm package [tmi.js](https://tmijs.com/), documentation shows there will be changes coming in 2023.
@@ -29,4 +35,3 @@ To Run:
  ```
  npm start
  ```
-
