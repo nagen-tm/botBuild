@@ -1,5 +1,27 @@
 from twitchio.ext import commands
 import os
+import tkinter
+import customtkinter
+
+# system settings
+customtkinter.set_appearance_mode("System")
+customtkinter.set_default_color_theme("blue")
+
+# app frame
+app = customtkinter.CTk()
+app.geometry("720x480")
+app.title("Giveaway Bot")
+
+# UI elements
+title = customtkinter.CTkLabel(app, text="Test text")
+title.pack(padx=10, pady=10)
+
+channel_name = tkinter.StringVar()
+channel_input = customtkinter.CTkEntry(app, width=350, height=40, channel_var=channel_name)
+channel_input.pack()
+
+# run app
+app.mainloop()
 
 class Bot(commands.Bot):
 
