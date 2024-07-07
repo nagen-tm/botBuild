@@ -1,39 +1,38 @@
 from twitchio.ext import commands
 import os
 
-bot = commands.Bot(
-    irc_token=os.environ['TWITCH_TOKEN'],
-    client_id=os.environ['TWITCH_CLIENT_ID'],
-    nick='incompetent_robot',
-    prefix='!',
-    initial_channels=['incompetent_ian'],
-)
+class Bot(commands.Bot):
+
+    def __init__(self):
+        # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
+        super().__init__(token=os.environ['TWITCH_TOKEN'], prefix='!', initial_channels=['nagen_tm'])
+
+    async def event_ready(self):
+        # Notify us when everything is ready!
+        # We are logged in and ready to chat and use commands...
+        print(f'Logged in as | {self.nick}')
+        print(f'User id is | {self.user_id}')
+
+    async def event_message(self, message):
+        # Messages with echo set to True are messages sent by the bot...
+        # For now we just want to ignore them...
+        if message.echo:
+            return
+
+        # Print the contents of our message to console...
+        print(message.content)
+
+        # Since we have commands and are overriding the default `event_message`
+        # We must let the bot know we want to handle and invoke our commands...
+        await self.handle_commands(message)
+
+    @commands.command()
+    async def hello(self, ctx: commands.Context):
+        # Send a hello back!
+        # Sending a reply back to the channel is easy... Below is an example.
+        await ctx.send(f'Hello {ctx.author.name}!')
 
 
-client = Client(
-    client_id=os.environ['TWITCH_CLIENT_ID'],
-    client_secret=os.environ['TWITCH_CLIENT_SECRET'],
-)
-
-
-@bot.event
-async def event_message(ctx):
-    print(ctx.author)
-    print(ctx.content)
-    await bot.handle_commands(ctx)
-
-
-@bot.command(name='test')
-async def test_command(ctx):
-    await ctx.send("this is a test response")
-
-
-@bot.command(name='who')
-async def get_chatters(ctx):
-    chatters = await client.get_chatters('incompetent_ian')
-    all_chatters = ' '.join(chatters.all)
-    await ctx.send(f"In chat: {all_chatters}")
-
-
-if __name__ == '__main__':
-    bot.run()
+bot = Bot()
+bot.run()
+# bot.run() is blocking and will stop execution of any below code here until stopped or closed.
