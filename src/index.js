@@ -1,166 +1,155 @@
-// documentation: https://tmijs.com/
+const commands = configs.commands;
+const responseTemplates = configs.responses;
+const settings = configs.settings;
 
-// import any libs we need
-const tmi = require('tmi.js');
-const { getSocials } = require("./api")
-
-// set options for log in
-const options = {
-	options: { debug: true },
-	identity: {
-		username: 'botBuild',
-		password: process.env.TWITCH_AUTH
-	},
-	channels: [ 'nagen_tm' ]
+function respond(template, user = "", message = "") {
+	ComfyJS.Say(template.replace("{user}", user).replace("{task}", message));
 }
 
-// login and connect with new tmi instance
-const client = new tmi.Client(options);
-client.connect().catch(console.error);
-
-// disconnection issues
-client.on('disconnected', (reason) => {
-  onDisconnectedHandler(reason)
-})
-
-// message commands in alphabetical order
-client.on('message', (channel, userstate, message, self) => {
-	if(self) return;
-
-  // commissions
-	if(message.includes('!commissions')) {
-    client.say(channel, 'Never.');
-	}
-
-  // fahrenheit to celsius
-	if(message.includes('!ftoc')) {
-    _getConversion(channel, userstate, message)
-	}
-
-  // lurk
-	if(message.includes('!lurk')) {
-    client.say(channel,
-      `${userstate['display-name']} disapeared into the shadows. No one knows when they'll be back.`
-    )
-	}
-
-  // inspiration randomizer
-  if(message.includes('!inspiration')) {
-    _getInspiration(channel)
-	}
-
-  // insta randomizer
-  if(message.includes('!insta')) {
-    _getInsta(channel)
-  }
-
-  // kofi
-  if(message.includes('!kofi')) {
-    client.say(channel, 
-      'Keep an eye on kofi, originals may be sold there! https://ko-fi.com/nagentm'
-    );
-  }
-
-  // prints
-  if(message.includes('!prints')) {
-    client.say(channel, 
-      'Check out my inprnt shop: https://www.inprnt.com/gallery/nagen_tm/'
-    );
-  }
-
-  // shoutouts with social media if available
-	if(message.includes('!so ')) {
-    _getSocials(channel, message)
-	}
-
-  // socials
-  if(message.includes('!socials')) {
-    client.say(channel, 
-      'I share my art here: https://www.instagram.com/nagen_tm/ https://www.deviantart.com/nagen-tm https://ko-fi.com/nagentm'
-    );
-  }
-
-  // tools
-  if(message.includes('!tools')) {
-    client.say(channel, 
-      'I use a Wacom Intuos Pro Medium with Clip Studio Paint for my digital art. For traditional I use panpastel and charcoal.'
-    );
-	}
-
-});
-
-// raid command
-client.on('raided', (channel, username) => {
-  client.say(channel,
-    `Thank you @${username} for the raid!`
-  )
-});
-
-// functions 
-function onDisconnectedHandler(reason) {
-  console.log(`Disconnected: ${reason}`)
+function isMod(flags) {
+	return flags.broadcaster || flags.mod;
 }
 
-// fahrenheit to celcius
-function _getConversion(channel, userstate, message){
-  let mes = message.split(' ');
-  let num = mes[1];
-  let temp = (num - 32) / 1.8
-  client.say(channel, `${userstate['display-name']} it's ${temp}C` );
-}
+ComfyJS.onCommand = (user, command, message, flags, extra) => {
+	// check if command is in the list of commands
+	command = `!${command.toLowerCase()}`;
 
-// random inspiration
-function _getInspiration(channel) {
-  // array of instas
-  const inspo =[
-    'https://www.instagram.com/loisvb/', 
-    'https://www.instagram.com/cnotbusch/', 
-    'https://www.instagram.com/vitkovskaya_art/', 
-    'https://www.instagram.com/robreyart/', 
-    'https://www.instagram.com/fdasuarez/', 
-    'https://www.instagram.com/valentinepasche/', 
-    'https://www.instagram.com/chrissabug/', 
-    'https://www.instagram.com/f3lc4t/', 
-    'https://www.instagram.com/valentinaremenar/',
-    'https://www.instagram.com/mad.charcoal/'
-  ]
+	if (
+		(command === "clear" && message === "done") ||
+		commands.adminClearDoneCommands.includes(command)
+	) {
+		if (!isMod(flags)) {
+			// user is not a mod or broadcaster
+			return respond(responseTemplates.notMod, user);
+		}
+		cleardone();
+		respond(responseTemplates.clearedDone, user);
+	} else if (commands.addTaskCommands.includes(command)) {
+		// ADD TASK
 
-  let link = inspo[Math.floor(Math.random() * inspo.length)]
-  client.say(channel, `I find this artist to be super inspirational! ${link}` );
-}
+		if (message === "") {
+			// check if message is empty
+			return respond(responseTemplates.noTaskContent, user);
+		}
 
-// random insta link
-function _getInsta(channel) {
-  const list = [
-    'https://www.instagram.com/artbysmashley/', 
-    'https://www.instagram.com/thejessiecarper/', 
-    'https://www.instagram.com/beateasel/', 
-    'https://www.instagram.com/margosimoneart/', 
-    'https://www.instagram.com/babe_rosss_art/', 
-    'https://www.instagram.com/abluskittle.art/', 
-    'https://www.instagram.com/cdotcreates/', 
-    'https://www.instagram.com/pawsitively_stitched/',
-    'https://www.instagram.com/sylessae/'
-  ]
+		if (userHasTask(user)) {
+			// check if user has a task pending
+			return respond(responseTemplates.noTaskAdded, user);
+		}
 
-  // randomly grab link
-  let link = list[Math.floor(Math.random() * list.length)]
-  client.say(channel, `Check out this insta: ${link}` );
-}
+		addTask(user, extra.userColor, message);
 
-// message functions:
-async function _getSocials(channel, message) {
-  let mes = message.split(' ');
-  let user = mes[1];
-  const getSM = await getSocials(user);
-  if(getSM.error){
-    client.say(channel, 'Did you type the name correctly ya dingus.' );
-  } else if (getSM.info) {
-    client.say(channel, `Follow this amazing person! https://www.twitch.tv/${user}`);
-  } else {
-    client.say(channel, `Follow this amazing person! https://www.twitch.tv/${user}`);
-    getSM.data.forEach(element => {
-      client.say(channel, ` And here: ${element}` );
-    })
-  }
-}
+		respond(responseTemplates.taskAdded, user, message);
+	} else if (commands.finishTaskCommands.includes(command)) {
+		// FINISH TASK
+
+		if (!userHasTask(user)) {
+			// check whether user has task, if not, return
+			return respond(responseTemplates.noTask, user);
+		}
+
+		let finishedTask = "";
+
+		if (settings.showDoneTasks) {
+			finishedTask = doneTask(user);
+		} else {
+			finishedTask = removeTask(user);
+		}
+
+		respond(responseTemplates.taskFinished, user, finishedTask);
+	} else if (commands.deleteTaskCommands.includes(command)) {
+		// DELETE TASK
+
+		let removedTask = removeTask(user);
+
+		respond(responseTemplates.taskDeleted, user, removedTask);
+	} else if (commands.editTaskCommands.includes(command)) {
+		// EDIT TASK
+
+		if (!userHasTask(user)) {
+			// check if user has a task pending
+			return respond(responseTemplates.noTaskToEdit, user);
+		}
+		editTask(user, message);
+
+		respond(responseTemplates.taskEdited, user, message);
+	} else if (commands.checkCommands.includes(command)) {
+		// CHECK YOUR OWN TASK OR OTHER PEOPLE'S TASK
+
+		if (message === "") {
+			if (checkTask(user) === "") {
+				// check if user has a task pending
+				return respond(responseTemplates.noTask, user);
+			}
+
+			let currentTask = checkTask(user);
+			respond(responseTemplates.taskCheck, user, currentTask);
+		} else {
+			let mentioned = message.split(" ")[0];
+
+			// remove @ if there is
+			if (mentioned[0] === "@") {
+				mentioned = mentioned.slice(1);
+			}
+
+			let currentTask = checkTask(mentioned);
+
+			if (currentTask === "") {
+				// check if user has a task pending
+				return respond(responseTemplates.noTaskA, user);
+			}
+
+			let response = responseTemplates.taskCheckUser;
+
+			// replace {user2} with mentioned user
+			response = response.replace("{user2}", `@${mentioned}`);
+
+			respond(response, user, currentTask);
+		}
+	} else if (commands.adminClearAllCommands.includes(command)) {
+		if (!isMod(flags)) {
+			// user is not a mod or broadcaster
+			return respond(responseTemplates.notMod, user);
+		}
+		clearAllTasks();
+
+		respond(responseTemplates.clearedAll, user);
+	} else if (commands.adminDeleteCommands.includes(command)) {
+		if (!isMod(flags)) {
+			// user is not a mod or broadcaster
+			return respond(responseTemplates.notMod, user);
+		}
+		adminDeleteTask(message);
+		respond(responseTemplates.adminDeleteTasks, user, message);
+	} else if (commands.nextTaskCommands.includes(command)) {
+		if (!userHasTask(user)) {
+			// check if user has a task pending
+			return respond(responseTemplates.noTask, user);
+		}
+
+		if (message === "") {
+			// check if message is empty
+			return respond(responseTemplates.nextNoContent, user);
+		}
+
+		let completedTask = nextTask(user, extra.userColor, message);
+		let response = responseTemplates.taskNext;
+		response = response.replace("{oldTask}", completedTask);
+		response = response.replace("{newTask}", message);
+
+		return respond(response, user, message);
+	} else if (commands.helpCommands.includes(command)) {
+		respond(responseTemplates.help, user);
+	} else if (commands.additionalCommands[command]) {
+		respond(commands.additionalCommands[command], user);
+	} else {
+		// command not found
+	}
+};
+
+const oauth_token = auth.oauth.includes("oauth:")
+	? auth.oauth
+	: `oauth:${auth.oauth}`;
+const auth_username = auth.username ? auth.username : auth.channel;
+
+ComfyJS.Init(auth_username, `${oauth_token}`, [auth.channel]);
